@@ -15,9 +15,9 @@ abstract: >
 keywords:
   - energy efficiency
   - network telemetry
-  - Traffic Engineering
-  - Network Digital Twin
-  - Artificial Intelligence
+  - traffic engineering
+  - network digital twin
+  - artificial intelligence
   - machine learning
   - Kafka
   - Docker
