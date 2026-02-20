@@ -1,0 +1,65 @@
+data:
+  csv_dates:
+    test_files:
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA3/processed_and_cleaned-v2/TC3.2_traffic_load_packet_length_variation-test3.csv
+      : - 02-07-2025
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA4/processed_and_cleaned/TC3.2_multiple_traffic_flows-test3.csv
+      : - 28-06-2025
+    train_files:
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA3/processed_and_cleaned-v2/TC3.2_traffic_load_packet_length_variation-test1.csv
+      : - 01-07-2025
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA3/processed_and_cleaned-v2/TC3.2_traffic_load_packet_length_variation-test2.csv
+      : - 03-07-2025
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA4/processed_and_cleaned/TC3.2_multiple_traffic_flows-test1.csv
+      : - 26-06-2025
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA4/processed_and_cleaned/TC3.2_multiple_traffic_flows-test2.csv
+      : - 27-06-2025
+  test_csv_count: 2
+  training_csv_count: 4
+features:
+  input:
+  - Throughput_Percentage
+  - PacketSize_B
+  output: Energy_Consumption
+model:
+  created_at: '2025-07-15 00:32:05'
+  hyperparameters:
+    activation: relu
+    hidden_layer_sizes:
+    - 64
+    - 32
+    - 16
+    - 8
+    learning_rate_init: 0.01
+    max_iter: 1000
+    random_state: 42
+    solver: adam
+  temporal_window: false
+  temporal_window_size: N/A
+  type: deep_neural_network
+  version: 1.0.0
+preprocessing:
+  normalization_applied: true
+  normalized_features:
+  - Throughput_Percentage
+  - PacketSize_B
+  scaler:
+    mean:
+    - 0.4992660705247174
+    - 771.3551121984141
+    params:
+      with_mean: true
+      with_std: true
+    scale:
+    - 0.31628959896135145
+    - 373.1304520320058
+    type: StandardScaler
+router:
+  name: rb
+  sampling_interval_seconds: 0
+testing_performance_metrics:
+  mae: 1.3190884257292743
+  mape: 1.730121228335908
+  mse: 3.2822276920503555
+  r2: 0.835548692015663
+  smape: 1.7298121881778938

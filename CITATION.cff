@@ -1,0 +1,83 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "TC3.2 Smart Energy-aware Zero-touch Traffic Engineering â€“ ML Inference Engine (TC32_ML)"
+type: software
+license: Apache-2.0
+repository-code: "https://github.com/MMB-UPM/TC32_ML"
+abstract: >
+  ML inference engine for the ACROSS TC3.2 use case (Smart Energy-aware Zero-touch Traffic Engineering).
+  Predicts router power consumption from instantaneous network telemetry-derived metrics to support Network
+  Digital Twin environments and energy-aware traffic engineering. Includes a Dockerized inference service using
+  Kafka topics for input/output and an optional telemetry mock service for replaying datasets, validating results,
+  and generating plots. Supports RA and RB router model families with linear regression, polynomial
+  regression, random forest, and deep neural network variants.
+keywords:
+  - energy efficiency
+  - network telemetry
+  - Traffic Engineering
+  - Network Digital Twin
+  - Artificial Intelligence
+  - machine learning
+  - Kafka
+  - Docker
+  - routers
+  - zero-touch
+authors:
+  - family-names: "Karamchandani Batra"
+    given-names: "Amit"
+    orcid: "https://orcid.org/0000-0002-0311-6610"
+    affiliation: "Universidad PolitÃ©cnica de Madrid"
+  - family-names: "GonzÃ¡lez-SÃ¡nchez"
+    given-names: "Daniel"
+    orcid: "https://orcid.org/0000-0002-7691-0030"
+    affiliation: "Universidad PolitÃ©cnica de Madrid"
+  - family-names: "de la Cal GarcÃ­a"
+    given-names: "Luis"
+    affiliation: "Universidad PolitÃ©cnica de Madrid"
+  - family-names: "Bellido Triana"
+    given-names: "Luis"
+    orcid: "https://orcid.org/0000-0001-9591-0928"
+    affiliation: "Universidad PolitÃ©cnica de Madrid"
+  - family-names: "Mozo Velasco"
+    given-names: "Bonifacio Alberto"
+    orcid: "https://orcid.org/0000-0001-9743-8604"
+    affiliation: "Universidad PolitÃ©cnica de Madrid"
+  - family-names: "Lentisco"
+    given-names: "Carlos M."
+    orcid: "https://orcid.org/0000-0002-7444-0872"
+    affiliation: "Universidad PolitÃ©cnica de Madrid"
+  - family-names: "De la Osa Mostazo"
+    given-names: "David"
+    orcid: "https://orcid.org/0000-0002-3819-3982"
+    affiliation: "TelefÃ³nica InnovaciÃ³n Digital"
+  - family-names: "Pastor Perales"
+    given-names: "Antonio"
+    orcid: "https://orcid.org/0000-0003-2849-9782"
+    affiliation: "TelefÃ³nica InnovaciÃ³n Digital"
+  - family-names: "R. Lopez"
+    given-names: "Diego"
+    affiliation: "TelefÃ³nica InnovaciÃ³n Digital"
+references:
+  - type: dataset
+    title: "Power Consumption and Network Traffic Telemetry Datasets of Carrier-Grade Network Equipment for Smart Energy-aware Zero-touch Traffic Engineering"
+    authors:
+      - family-names: "Lentisco"
+        given-names: "Carlos M."
+      - family-names: "De la Osa Mostazo"
+        given-names: "David"
+      - family-names: "Karamchandani Batra"
+        given-names: "Amit"
+      - family-names: "GonzÃ¡lez SÃ¡nchez"
+        given-names: "Daniel"
+      - family-names: "de la Cal GarcÃ­a"
+        given-names: "Luis"
+      - family-names: "Bellido Triana"
+        given-names: "Luis"
+      - family-names: "Mozo Velasco"
+        given-names: "Bonifacio Alberto"
+      - family-names: "Pastor Perales"
+        given-names: "Antonio"
+      - family-names: "R. Lopez"
+        given-names: "Diego"
+    doi: "10.5281/zenodo.17282065"
+    year: 2025

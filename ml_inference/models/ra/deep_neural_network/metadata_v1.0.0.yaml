@@ -1,0 +1,74 @@
+data:
+  csv_dates:
+    test_files:
+      datasets/ra/ExperimentoA1/processed_and_cleaned-v3/TC3.2_traffic_load_variation-test3.csv:
+      - 11-05-2024
+      datasets/ra/ExperimentoA3/processed_and_cleaned-v3/TC3.2_traffic_load_packet_length_variation-test3.csv:
+      - 11-10-2024
+      - 11-11-2024
+      datasets/ra/ExperimentoA4/processed_and_cleaned-v3/TC3.2_multiple_traffic_flows-test3.csv:
+      - 19-02-2025
+    train_files:
+      datasets/ra/ExperimentoA1/processed_and_cleaned-v3/TC3.2_traffic_load_variation-test1.csv:
+      - 11-05-2024
+      datasets/ra/ExperimentoA1/processed_and_cleaned-v3/TC3.2_traffic_load_variation-test2.csv:
+      - 11-05-2024
+      datasets/ra/ExperimentoA3/processed_and_cleaned-v3/TC3.2_traffic_load_packet_length_variation-test1.csv:
+      - 11-09-2024
+      - 11-10-2024
+      datasets/ra/ExperimentoA3/processed_and_cleaned-v3/TC3.2_traffic_load_packet_length_variation-test2.csv:
+      - 11-10-2024
+      datasets/ra/ExperimentoA4/processed_and_cleaned-v3/TC3.2_multiple_traffic_flows-test1.csv:
+      - 18-02-2025
+      datasets/ra/ExperimentoA4/processed_and_cleaned-v3/TC3.2_multiple_traffic_flows-test2.csv:
+      - 18-02-2025
+      - 19-02-2025
+  test_csv_count: 3
+  training_csv_count: 6
+features:
+  input:
+  - Throughput_Percentage
+  - PacketSize_B
+  output: Energy_Consumption
+model:
+  created_at: '2025-07-16 19:29:11'
+  hyperparameters:
+    activation: relu
+    hidden_layer_sizes:
+    - 64
+    - 32
+    - 16
+    - 8
+    learning_rate_init: 0.01
+    max_iter: 1000
+    random_state: 42
+    solver: adam
+  temporal_window: false
+  temporal_window_size: N/A
+  type: deep_neural_network
+  version: 1.0.0
+preprocessing:
+  normalization_applied: true
+  normalized_features:
+  - Throughput_Percentage
+  - PacketSize_B
+  scaler:
+    mean:
+    - 0.49979072333625046
+    - 844.843149043035
+    params:
+      with_mean: true
+      with_std: true
+    scale:
+    - 0.3162511593990653
+    - 416.4948389062535
+    type: StandardScaler
+router:
+  name: ra
+  sampling_interval_seconds: 0
+testing_performance_metrics:
+  mae: 4.991445298252463
+  mape: 0.6909370566657314
+  mse: 46.46702422137933
+  r2: 0.6676689756309486
+  smape: 0.6910059103109679

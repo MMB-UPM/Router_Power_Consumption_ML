@@ -1,0 +1,54 @@
+data:
+  csv_dates:
+    test_files:
+      datasets/ra/ExperimentoA1/processed_and_cleaned-v3/TC3.2_traffic_load_variation-test3.csv:
+      - 11-05-2024
+      datasets/ra/ExperimentoA3/processed_and_cleaned-v3/TC3.2_traffic_load_packet_length_variation-test3.csv:
+      - 11-10-2024
+      - 11-11-2024
+      datasets/ra/ExperimentoA4/processed_and_cleaned-v3/TC3.2_multiple_traffic_flows-test3.csv:
+      - 19-02-2025
+    train_files:
+      datasets/ra/ExperimentoA1/processed_and_cleaned-v3/TC3.2_traffic_load_variation-test1.csv:
+      - 11-05-2024
+      datasets/ra/ExperimentoA1/processed_and_cleaned-v3/TC3.2_traffic_load_variation-test2.csv:
+      - 11-05-2024
+      datasets/ra/ExperimentoA3/processed_and_cleaned-v3/TC3.2_traffic_load_packet_length_variation-test1.csv:
+      - 11-09-2024
+      - 11-10-2024
+      datasets/ra/ExperimentoA3/processed_and_cleaned-v3/TC3.2_traffic_load_packet_length_variation-test2.csv:
+      - 11-10-2024
+      datasets/ra/ExperimentoA4/processed_and_cleaned-v3/TC3.2_multiple_traffic_flows-test1.csv:
+      - 18-02-2025
+      datasets/ra/ExperimentoA4/processed_and_cleaned-v3/TC3.2_multiple_traffic_flows-test2.csv:
+      - 18-02-2025
+      - 19-02-2025
+  test_csv_count: 3
+  training_csv_count: 6
+features:
+  input:
+  - Throughput_Percentage
+  - PacketSize_B
+  output: Energy_Consumption
+model:
+  created_at: '2025-07-16 19:28:43'
+  hyperparameters:
+    copy_X: true
+    fit_intercept: true
+  temporal_window: false
+  temporal_window_size: N/A
+  type: linear_regression
+  version: 1.0.0
+preprocessing:
+  normalization_applied: false
+  normalized_features: []
+  scaler: null
+router:
+  name: ra
+  sampling_interval_seconds: 0
+testing_performance_metrics:
+  mae: 5.368940244203606
+  mape: 0.7426891357263786
+  mse: 51.56241724946487
+  r2: 0.6312268489193466
+  smape: 0.7429735907914711

@@ -1,0 +1,27 @@
+name: Update parent repository submodules
+
+on:
+  push:
+    branches: 
+      - main
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+        with: 
+          repository: giros-dit/ACROSS-monitoring-stack
+          token: ${{ secrets.ACTIONS_PAT }}
+          submodules: true
+
+      - name: Pull & update submodules recursively
+        run: |
+          git submodule update --init --recursive
+          git submodule update --recursive --remote
+
+      - uses: stefanzweifel/git-auto-commit-action@v6.0.1
+        with:
+          commit_message: "ci(update): updated ${{ github.event.repository.name }} submodule"

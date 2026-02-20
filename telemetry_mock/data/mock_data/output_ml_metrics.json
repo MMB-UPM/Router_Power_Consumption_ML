@@ -1,0 +1,86 @@
+{
+  "node_exporter": "r1-service:9100",
+  "router_type": "A",
+  "epoch_timestamp": "1742376270.1693792",
+  "experiment_id": "1",
+  "interfaces": [
+    "eth0"
+  ],
+  "flag_debug_params": true,
+  "debug_params": {
+    "flag_original_metrics": true,
+    "max_throughput_mbps": 100,
+    "unit": "bytes",
+    "polling_interval": 5,
+    "test_metrics": true,
+    "multiplier": 2000
+  },
+  "metrics": [
+  {
+    "name": "node_network_receive_bytes_total",
+    "description": "Network device statistic receive_bytes.",
+    "type": "counter",
+    "values": [
+      {
+        "value": "62500000",
+        "labels": [
+          {
+            "name": "device",
+            "value": "eth0"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "node_network_receive_packets_total",
+    "description": "Network device statistic receive_packets.",
+    "type": "counter",
+    "values": [
+      {
+        "value": "200",
+        "labels": [
+          {
+            "name": "device",
+            "value": "eth0"
+          }
+        ]
+      }
+    ]
+  }
+],
+  "input_ml_metrics": [
+    {
+      "name": "node_network_receive_packets_total_rate",
+      "description": "Calculated rate metric for node_network_receive_packets_total",
+      "type": "rate",
+      "value": 35372.77665869558
+    },
+    {
+      "name": "node_network_average_received_packet_length",
+      "description": "Average length of received packets",
+      "type": "length",
+      "value": 625000
+    },
+    {
+      "name": "node_network_router_capacity_occupation",
+      "description": "Router capacity occupation",
+      "type": "percentage",
+      "value": 88.43194164673895
+    }
+  ],
+  "output_ml_metrics": [
+    {
+      "name": "node_network_power_consumption_variation_rate_occupation",
+      "description": "Router power consumption variation rate over node occupation",
+      "type": "power_consumption_variation_rate",
+      "value": 0.2
+    },
+    {
+      "name": "node_network_power_consumption_variation_rate_packet_length",
+      "description": "Router power consumption variation rate over packet length",
+      "type": "power_consumption_variation_rate",
+      "value": 0
+    }
+  ]
+}

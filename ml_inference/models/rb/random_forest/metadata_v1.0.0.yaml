@@ -1,0 +1,48 @@
+data:
+  csv_dates:
+    test_files:
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA3/processed_and_cleaned-v2/TC3.2_traffic_load_packet_length_variation-test3.csv
+      : - 02-07-2025
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA4/processed_and_cleaned/TC3.2_multiple_traffic_flows-test3.csv
+      : - 28-06-2025
+    train_files:
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA3/processed_and_cleaned-v2/TC3.2_traffic_load_packet_length_variation-test1.csv
+      : - 01-07-2025
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA3/processed_and_cleaned-v2/TC3.2_traffic_load_packet_length_variation-test2.csv
+      : - 03-07-2025
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA4/processed_and_cleaned/TC3.2_multiple_traffic_flows-test1.csv
+      : - 26-06-2025
+      ? datasets/rb/ACROSS_energy_experiments_RB/datasets/ExperimentoA4/processed_and_cleaned/TC3.2_multiple_traffic_flows-test2.csv
+      : - 27-06-2025
+  test_csv_count: 2
+  training_csv_count: 4
+features:
+  input:
+  - Throughput_Percentage
+  - PacketSize_B
+  output: Energy_Consumption
+model:
+  created_at: '2025-07-15 00:32:01'
+  hyperparameters:
+    max_depth: null
+    min_samples_leaf: 1
+    min_samples_split: 2
+    n_estimators: 50
+    random_state: 42
+  temporal_window: false
+  temporal_window_size: N/A
+  type: random_forest
+  version: 1.0.0
+preprocessing:
+  normalization_applied: false
+  normalized_features: []
+  scaler: null
+router:
+  name: rb
+  sampling_interval_seconds: 0
+testing_performance_metrics:
+  mae: 1.3018500116040936
+  mape: 1.7089949205726724
+  mse: 3.222578662598507
+  r2: 0.8385373210303749
+  smape: 1.7069194643341719

@@ -1,0 +1,8 @@
+# Minimal set of dependencies required for inference service
+numpy>=1.21.0
+pandas>=1.3.0
+scikit-learn>=1.0.0
+joblib>=1.1.0
+pyyaml>=6.0
+confluent-kafka>=1.8.2
+tensorflow>=2.10.0  # Added for LSTM model support
