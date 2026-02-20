@@ -1,0 +1,181 @@
+name: Package and Deploy Models
+
+# This workflow packages model folders into tar.gz files and deploys them to /srv/models
+# - Push mode: Only packages folders that have been modified (change detection)
+# - Workflow dispatch mode: Packages ALL model folders (ignores change detection)
+#   Any manual run via workflow_dispatch will automatically force package all models
+
+on:
+  push:
+    branches: 
+      - main
+    paths:
+      - 'ml_inference/models/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      force_packaging:
+        description: 'Force packaging of all models'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  package-models:
+    runs-on: self-hosted
+    env:
+      FORCE_PACKAGING: ${{ github.event.inputs.force_packaging || 'false' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ secrets.ACTIONS_PAT }}
+          fetch-depth: 0  # Fetch full history to detect changes
+
+      - name: Detect modified model folders
+        id: detect-changes
+        run: |
+          # Check if force packaging is enabled (either via workflow_dispatch or manual input)
+          FORCE_PACKAGING="${FORCE_PACKAGING:-false}"
+          
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$FORCE_PACKAGING" = "true" ] || [ "$FORCE_PACKAGING" = "1" ]; then
+            echo "FORCE_PACKAGING is enabled - packaging all model folders (triggered by: ${{ github.event_name }})"
+            
+            # Find all vendor/subfolder combinations
+            FOLDERS_TO_PACKAGE=""
+            if [ -d "ml_inference/models" ]; then
+              FOLDERS_TO_PACKAGE=$(find ml_inference/models -mindepth 2 -maxdepth 2 -type d | sed 's|^ml_inference/models/||' | sort)
+            fi
+            
+            echo "All folders to package (force mode):"
+            echo "$FOLDERS_TO_PACKAGE"
+            
+            # Convert to JSON array
+            if [ -n "$FOLDERS_TO_PACKAGE" ]; then
+              FOLDERS_JSON=$(echo "$FOLDERS_TO_PACKAGE" | jq -R -s -c 'split("\n") | map(select(. != ""))')
+            else
+              FOLDERS_JSON="[]"
+            fi
+            
+            echo "folders-json=$FOLDERS_JSON" >> $GITHUB_OUTPUT
+            echo "has-changes=true" >> $GITHUB_OUTPUT
+            echo "force-packaging=true" >> $GITHUB_OUTPUT
+          else
+            echo "Normal mode - detecting changed folders only"
+            
+            # Get the list of changed files  
+            BASE_SHA=""
+            HEAD_SHA="${{ github.sha }}"
+            
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              # For PR, we'll use a different approach to get the base
+              BASE_SHA=$(git merge-base HEAD origin/${{ github.base_ref || 'main' }})
+            elif [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+              # For push with previous commit
+              BASE_SHA="${{ github.event.before }}"
+            fi
+            
+            # Get changed files in models directory
+            if [ -z "$BASE_SHA" ]; then
+              # First commit case - check all model files
+              CHANGED_FILES=$(find ml_inference/models -type f -name "*" | grep -E "^ml_inference/models/[^/]+/[^/]+/" || true)
+            else
+              CHANGED_FILES=$(git diff --name-only $BASE_SHA..$HEAD_SHA | grep -E "^ml_inference/models/[^/]+/[^/]+/" || true)
+            fi
+            
+            echo "Changed files:"
+            echo "$CHANGED_FILES"
+            
+            # Extract unique vendor/subfolder combinations
+            FOLDERS_TO_PACKAGE=""
+            if [ -n "$CHANGED_FILES" ]; then
+              FOLDERS_TO_PACKAGE=$(echo "$CHANGED_FILES" | sed -n 's|^ml_inference/models/\([^/]*\)/\([^/]*\)/.*|\1/\2|p' | sort -u)
+            fi
+            
+            echo "Folders to package:"
+            echo "$FOLDERS_TO_PACKAGE"
+            
+            # Convert to JSON array for matrix strategy
+            if [ -n "$FOLDERS_TO_PACKAGE" ]; then
+              FOLDERS_JSON=$(echo "$FOLDERS_TO_PACKAGE" | jq -R -s -c 'split("\n") | map(select(. != ""))')
+            else
+              FOLDERS_JSON="[]"
+            fi
+            
+            echo "folders-json=$FOLDERS_JSON" >> $GITHUB_OUTPUT
+            echo "has-changes=$([ -n "$FOLDERS_TO_PACKAGE" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+            echo "force-packaging=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create tar.gz packages
+        if: steps.detect-changes.outputs.has-changes == 'true'
+        run: |
+          # Create temporary directory for packages
+          mkdir -p /tmp/model-packages
+          
+          # Read the folders to package
+          FOLDERS='${{ steps.detect-changes.outputs.folders-json }}'
+          echo "Processing folders: $FOLDERS"
+          
+          # Process each folder
+          echo "$FOLDERS" | jq -r '.[]' | while read -r folder; do
+            if [ -n "$folder" ]; then
+              vendor=$(echo "$folder" | cut -d'/' -f1)
+              subfolder=$(echo "$folder" | cut -d'/' -f2)
+              
+              echo "Processing: vendor=$vendor, subfolder=$subfolder"
+              
+              # Check if the folder exists
+              if [ -d "ml_inference/models/$vendor/$subfolder" ]; then
+                # Create tar.gz package
+                package_name="${vendor}-${subfolder}.tar.gz"
+                echo "Creating package: $package_name"
+                
+                cd ml_inference/models/$vendor
+                tar -czf "/tmp/model-packages/$package_name" "$subfolder"
+                cd - > /dev/null
+                
+                echo "Package created: /tmp/model-packages/$package_name"
+                ls -la "/tmp/model-packages/$package_name"
+              else
+                echo "Warning: Folder ml_inference/models/$vendor/$subfolder does not exist"
+              fi
+            fi
+          done
+
+      - name: Create destination directory
+        if: steps.detect-changes.outputs.has-changes == 'true'
+        run: |
+          sudo mkdir -p /srv/models
+          sudo chown $(whoami):$(whoami) /srv/models
+
+      - name: Copy packages to destination
+        if: steps.detect-changes.outputs.has-changes == 'true'
+        run: |
+          if [ -d "/tmp/model-packages" ] && [ "$(ls -A /tmp/model-packages)" ]; then
+            echo "Copying packages to /srv/models..."
+            cp /tmp/model-packages/*.tar.gz /srv/models/
+            
+            echo "Packages copied successfully:"
+            ls -la /srv/models/*.tar.gz
+            
+            # Verify tar.gz files
+            echo "Verifying packages:"
+            for package in /srv/models/*.tar.gz; do
+              if [ -f "$package" ]; then
+                echo "Contents of $(basename $package):"
+                tar -tzf "$package" | head -10
+                echo "---"
+              fi
+            done
+          else
+            echo "No packages found to copy"
+          fi
+
+      - name: Cleanup temporary files
+        if: always()
+        run: |
+          rm -rf /tmp/model-packages

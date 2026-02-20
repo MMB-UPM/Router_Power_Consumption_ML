@@ -1,0 +1,203 @@
+services:
+  # RA Linear Regression model container with ra_1 topic
+  ra1-linear-regression:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ra1-linear-regression
+    volumes:
+      - ./ml_inference/models:/app/models
+      - ./ml_inference/inference.py:/app/inference.py
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MODEL_TYPE=linear_regression
+      - ROUTER_TYPE=ra
+      - MODEL_VERSION=${MODEL_VERSION:-1.0.0}
+      - KAFKA_INPUT_TOPIC=ra_1_input
+      - KAFKA_OUTPUT_TOPIC=ra_1_output
+      - KAFKA_BROKERS=kafka:9092
+      - LOG_LEVEL=INFO
+      - EPSILON=0.01
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - default
+
+  # RA Random Forest model container with ra_2 topic
+  ra2-random-forest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ra2-random-forest
+    volumes:
+      - ./ml_inference/models:/app/models
+      - ./ml_inference/inference.py:/app/inference.py
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MODEL_TYPE=random_forest
+      - ROUTER_TYPE=ra
+      - MODEL_VERSION=${MODEL_VERSION:-1.0.0}
+      - KAFKA_INPUT_TOPIC=ra_2_input
+      - KAFKA_OUTPUT_TOPIC=ra_2_output
+      - KAFKA_BROKERS=kafka:9092
+      - LOG_LEVEL=INFO
+      - EPSILON=0.01
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - default
+
+  # RB Polynomial Regression model container with rb_1 topic
+  rb1-polynomial-regression:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rb1-polynomial-regression
+    volumes:
+      - ./ml_inference/models:/app/models
+      - ./ml_inference/inference.py:/app/inference.py
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MODEL_TYPE=polynomial_regression
+      - ROUTER_TYPE=rb
+      - MODEL_VERSION=${MODEL_VERSION:-1.0.0}
+      - KAFKA_INPUT_TOPIC=rb_1_input
+      - KAFKA_OUTPUT_TOPIC=rb_1_output
+      - KAFKA_BROKERS=kafka:9092
+      - LOG_LEVEL=INFO
+      - EPSILON=0.01
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - default
+
+  # RB Deep Neural Network model container with rb_2 topic
+  rb2-deep-neural-network:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rb2-deep-neural-network
+    volumes:
+      - ./ml_inference/models:/app/models
+      - ./ml_inference/inference.py:/app/inference.py
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MODEL_TYPE=deep_neural_network
+      - ROUTER_TYPE=rb
+      - MODEL_VERSION=${MODEL_VERSION:-1.0.0}
+      - KAFKA_INPUT_TOPIC=rb_2_input
+      - KAFKA_OUTPUT_TOPIC=rb_2_output
+      - KAFKA_BROKERS=kafka:9092
+      - LOG_LEVEL=INFO
+      - EPSILON=0.01
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - default
+
+  # Telemetry Mock Service - conditional activation based on TELEMETRY_MOCK env variable
+  telemetry-mock:
+    build:
+      context: ./telemetry_mock
+      dockerfile: Dockerfile
+    container_name: telemetry-mock
+    environment:
+      - KAFKA_INPUT_TOPICS=ra_1_input,ra_2_input,rb_1_input,rb_2_input  # Input topics to send data to
+      - KAFKA_OUTPUT_TOPICS=ra_1_output,ra_2_output,rb_1_output,rb_2_output  # Output topics to listen for results
+      - KAFKA_BROKERS=kafka:9092
+      # - INTERVAL=5.0
+      - INTERVAL=0.0 # Uncomment to test data replay with no delay
+      - INPUT_TEMPLATE=/app/data/mock_data/input_ml_metrics.json
+      - LOG_LEVEL=INFO
+      - USE_REAL_DATA=true
+      - TEST_DATA_PATH=/app/data/test_data
+      - PLOTS_DIR=/app/plots
+      - PLOT_INTERVAL=1000
+      - VERSION=1.0.0
+    volumes:
+      - ./telemetry_mock/plots:/app/plots
+      - ./telemetry_mock/outputs:/app/outputs
+      - ./telemetry_mock/data:/app/data
+    depends_on:
+      kafka:
+        condition: service_healthy
+      ra1-linear-regression:
+        condition: service_started
+      ra2-random-forest:
+        condition: service_started
+      rb1-polynomial-regression:
+        condition: service_started
+      rb2-deep-neural-network:
+        condition: service_started
+    profiles:
+      - telemetry_mock
+    restart: unless-stopped
+    networks:
+      - default
+
+  # Kafka broker for development/testing
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_ADVERTISED_HOST_NAME=kafka
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CREATE_TOPICS=ra_1_input:1:1,ra_1_output:1:1,ra_2_input:1:1,ra_2_output:1:1,rb_1_input:1:1,rb_1_output:1:1,rb_2_input:1:1,rb_2_output:1:1
+      # Reduce logging unless debug mode is enabled
+      - KAFKA_LOG4J_LOGGERS=org.apache.zookeeper=WARN,org.apache.kafka=WARN,kafka=WARN,kafka.cluster=WARN,kafka.controller=WARN,kafka.coordinator=WARN,kafka.log=WARN,kafka.server=WARN,kafka.zookeeper=WARN,state.change.logger=WARN
+      - KAFKA_LOG4J_ROOT_LOGLEVEL=WARN
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server localhost:9092 --list && echo 'Kafka ready' || exit 1"]
+      interval: 10s
+      timeout: 20s
+      retries: 10
+      start_period: 30s
+    networks:
+      - default
+
+  # Zookeeper for Kafka
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      # Reduce logging unless debug mode is enabled
+      - ZOO_LOG4J_PROP=WARN,CONSOLE
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD-SHELL", "echo ruok | nc localhost 2181 | grep imok || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - default
+
+# Define networks section explicitly
+networks:
+  default:
+    name: tc32_default_network
