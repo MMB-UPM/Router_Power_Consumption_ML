@@ -1,14 +1,14 @@
 {
-  "title": "TC3.2 Smart Energy-aware Zero-touch Traffic Engineering ? ML Inference Engine (TC32_ML)",
+  "title": "ML Inference Engine for Smart Energy-aware Zero-touch Traffic Engineering",
   "upload_type": "software",
   "access_right": "open",
-  "description": "This repository provides the ML inference engine for the ACROSS TC3.2 use case (Smart Energy-aware Zero-touch Traffic Engineering). The software predicts router power consumption from instantaneous network telemetry-derived metrics to support Network Digital Twin (NDT) environments and energy-aware traffic engineering.\n\nThe inference service is containerized (Docker/Docker Compose) and uses Kafka for message exchange: it consumes input telemetry features, runs a selected ML model, and publishes predicted power consumption along with feature-based variation rates. The repository also includes a telemetry mock service to replay experiment datasets, validate predictions against ground truth, and generate verification plots.\n\nSupported router types: RA and RB. Supported model types: linear regression, polynomial regression, random forest, and deep neural networks (with optional scaling). Models are organized by router type/model type and selected dynamically via environment configuration.",
+  "description": "ML inference engine for Smart Energy-aware Zero-touch Traffic Engineering. Predicts router power consumption from instantaneous network telemetry-derived metrics to support Network Digital Twin environments and energy-aware traffic engineering. Includes a Dockerized inference service using Kafka topics for input/output and an optional telemetry mock service for replaying datasets, validating results, and generating plots. Supports two distinct carrier-grade router model families with linear regression, polynomial regression, random forest, and deep neural network variants. This work was carried out under the TC3.2 use case of the ACROSS European project (Horizon Europe programme)",
   "keywords": [
     "energy efficiency",
     "network telemetry",
-    "Traffic Engineering",
-    "Network Digital Twin",
-    "Artificial Intelligence",
+    "traffic engineering",
+    "Network digital twin",
+    "artificial intelligence",
     "machine learning",
     "Kafka",
     "Docker",
@@ -19,55 +19,55 @@
     {
       "name": "Karamchandani Batra, Amit",
       "orcid": "0000-0002-0311-6610",
-      "affiliation": "Universidad Polit?cnica de Madrid",
+      "affiliation": "Universidad Politécnica de Madrid",
       "type": "ProjectMember"
     },
     {
       "name": "Gonz?lez-S?nchez, Daniel",
       "orcid": "0000-0002-7691-0030",
-      "affiliation": "Universidad Polit?cnica de Madrid",
+      "affiliation": "Universidad Politécnica de Madrid",
       "type": "ProjectMember"
     },
     {
       "name": "de la Cal Garc?a, Luis",
       "orcid": "0000-0002-1798-8743",
-      "affiliation": "Universidad Polit?cnica de Madrid",
+      "affiliation": "Universidad Politécnica de Madrid",
       "type": "ProjectMember"
     },
     {
       "name": "Bellido Triana, Luis",
       "orcid": "0000-0001-9591-0928",
-      "affiliation": "Universidad Polit?cnica de Madrid",
+      "affiliation": "Universidad Politécnica de Madrid",
       "type": "ProjectMember"
     },
     {
       "name": "Mozo Velasco, Bonifacio Alberto",
       "orcid": "0000-0001-9743-8604",
-      "affiliation": "Universidad Polit?cnica de Madrid",
+      "affiliation": "Universidad Politécnica de Madrid",
       "type": "ProjectMember"
     },
     {
       "name": "Lentisco, Carlos M.",
       "orcid": "0000-0002-7444-0872",
-      "affiliation": "Universidad Polit?cnica de Madrid",
+      "affiliation": "Universidad Politécnica de Madrid",
       "type": "ProjectMember"
     },
     {
       "name": "De la Osa Mostazo, David",
       "orcid": "0000-0002-3819-3982",
-      "affiliation": "Telef?nica Innovaci?n Digital",
+      "affiliation": "Telef?nica Innovación Digital",
       "type": "ProjectMember"
     },
     {
       "name": "Pastor Perales, Antonio",
       "orcid": "0000-0003-2849-9782",
-      "affiliation": "Telef?nica Innovaci?n Digital",
+      "affiliation": "Telef?nica Innovación Digital",
       "type": "ProjectMember"
     },
     {
       "name": "R. Lopez, Diego",
       "orcid": "0000-0002-8326-2000",
-      "affiliation": "Telef?nica Innovaci?n Digital",
+      "affiliation": "Telef?nica Innovación Digital",
       "type": "ProjectMember"
     }
   ],
