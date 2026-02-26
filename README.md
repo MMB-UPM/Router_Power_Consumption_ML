@@ -1,5 +1,7 @@
 # ML Models for Smart Energy-aware Zero-touch Traffic Engineering
 
+[![DOI](https://zenodo.org/badge/1162947484.svg)](https://doi.org/10.5281/zenodo.18717876)
+
 This repository contains code for predicting power consumption in network routers. The solution uses machine learning models to estimate power consumption variation rates based on network metrics. The objective is to provide a way to estimate these values in Network Digital Twin environments, where the goal is to create a digital representation of the network and its components to optimize traffic routing in the real network based on predicted power consumption. This work was conceptualized and developed within the TC3.2 use case of the ACROSS European research project.
 
 ## ML Inference Engine Directory Structure
@@ -734,3 +736,24 @@ Common issues:
 - **Input Format Issues**: Check that input data matches the expected format for the model
 
 - **Container Startup Failures**: Check logs with `./log.sh <service-name>` for details
+
+## Acknowledgements
+
+This work has been supported by the European Union’s Horizon Europe Research and Innovation Program under Grant Agreement 101097122 ([ACROSS](https://across-he.eu/)).
+
+<table border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: none;">
+  <tr>
+    <td align="center" style="border: none; padding: 0 12px;">
+      <a href="https://across-he.eu/">
+        <img src="img/across-logo.jpg" alt="ACROSS logo" width="420" />
+      </a>
+    </td>
+    <td align="center" style="border: none; padding: 0 12px;">
+      <img src="img/eu-union.jpg" alt="Funded by the European Union" width="420" />
+    </td>
+  </tr>
+</table>
+
+## License
+
+This project is licensed under [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
